@@ -27,4 +27,5 @@ void loop() {
   interrupts();
   //Serial.println(t2-t1);
 
+  recv_serial();
 }
