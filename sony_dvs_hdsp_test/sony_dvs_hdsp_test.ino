@@ -150,7 +150,7 @@ void loop() {
 
         int offset = text[(DIGIT_COUNT -1 - d_i)+(m_i*DIGIT_COUNT)];
         offset *=5;
-        uint8_t x = reverse(font5x7[idx+offset]) >> 1;
+        uint8_t x = reverse(pgm_read_word_near(font5x7 + idx+offset)) >> 1;
 
         send_one_row(x);
       }
