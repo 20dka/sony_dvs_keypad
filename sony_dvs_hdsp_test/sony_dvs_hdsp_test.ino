@@ -7,8 +7,6 @@ void setup() {
 
   setup_screen_io();
   
-  flush_row();
-  flush_column();
 }
 
 void loop() {

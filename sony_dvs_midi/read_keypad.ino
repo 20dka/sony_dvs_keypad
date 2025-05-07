@@ -32,7 +32,7 @@ void flush_row_reg() {
 #ifdef VERBOSE
   Serial.print("Flushing row register...");
 #endif
-  for(int i=0;i<ROW_COUNT;i++) {
+  for(int i=0;i<BUTTON_ROW_COUNT;i++) {
     row_adv();
     clock_adv();
   }
@@ -65,9 +65,9 @@ void read_keypad() {
 #endif
   set_latch();
   
-  memset(data.arr, 0, OUTPUT_REGISTER_COUNT*ROW_COUNT);
+  memset(data.arr, 0, OUTPUT_REGISTER_COUNT*BUTTON_ROW_COUNT);
 
-  for(int row = 0; row < ROW_COUNT; row++) {
+  for(int row = 0; row < BUTTON_ROW_COUNT; row++) {
 
 #ifdef VERBOSE
     Serial.print("Shifting out bits for row ");

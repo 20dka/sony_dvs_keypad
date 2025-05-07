@@ -1,0 +1,139 @@
+//#include "MIDIUSB.h"
+
+
+#include "font5x7.h"
+#include "drive_hdsp.h"
+
+//#define VERBOSE
+
+// number of 74xx164 chips used for driving button matrix rows _per board_
+#define ROW_CHIPS 1
+#define ROW_COUNT (ROW_CHIPS*8)
+
+// _total_ number of 74xx166 chips on bus(ex: Key Frame control [3] + Numeric keypad [2])
+#define OUTPUT_REGISTER_COUNT 5
+
+
+typedef union keypad_data_t {
+  struct {
+    uint8_t parity0;
+    uint8_t enc0_low;
+    uint8_t :8;
+    uint8_t parity1;
+    uint8_t :16;
+    uint8_t enc0_high;
+    uint8_t :40;
+    uint8_t btn0_0;
+    uint8_t :32;
+    uint8_t btn0_1;
+    uint8_t :8;
+    uint8_t btn1_0;
+    uint8_t :32;
+    uint8_t btn1_1;
+    uint8_t :32;
+    uint8_t btn1_2;
+    uint8_t :32;
+    uint8_t btn1_3;
+    uint8_t :16;
+    uint8_t btn0_2;
+    uint8_t :8;
+    uint8_t btn1_4;
+  }__attribute__((packed)) fields;
+  uint8_t arr[OUTPUT_REGISTER_COUNT*ROW_COUNT];
+} keypad_data_t;
+
+keypad_data_t data;
+
+void setup_keypad_io();
+void flush_row_reg();
+
+void setup() {
+  //Serial.begin(115200);
+  //Serial.println("\nHello :) Sony DVS Keypad MIDI interface :)");
+  setup_keypad_io();
+  setup_screen_io();
+
+  flush_row();
+  flush_column();
+  flush_row_reg();
+}
+
+/*
+void noteOn(byte channel, byte pitch, byte velocity) {
+  midiEventPacket_t noteOn = {0x09, 0x90 | channel, pitch, velocity};
+  MidiUSB.sendMIDI(noteOn);
+}
+
+void noteOff(byte channel, byte pitch, byte velocity) {
+  midiEventPacket_t noteOff = {0x08, 0x80 | channel, pitch, velocity};
+  MidiUSB.sendMIDI(noteOff);
+}
+
+
+void controlChange(byte channel, byte control, byte value) {
+  midiEventPacket_t event = {0x0B, 0xB0 | channel, control, value};
+  MidiUSB.sendMIDI(event);
+  
+}
+
+void write_num_to_display(uint32_t n) {
+  memset(text, 0, MAX_TEXT_LEN);
+  ultoa(text, n, 10);
+}
+
+void send_if_differs(int channel_offset, byte current, byte old) {
+  for (int i = 0; i<8; i++) {
+    byte note_idx =  channel_offset*8 + i;
+    if ( (current & bit(i)) && !(old & bit(i)) ) {
+      noteOn(0, note_idx, 255);
+      write_num_to_display(note_idx);
+      text[11] = '+';
+    } else if ( !(current & bit(i)) && (old & bit(i)) ) {
+      noteOff(0, note_idx, 0);
+      write_num_to_display(note_idx);
+      text[11] = '+';
+    }
+  }
+}
+
+void midi_stuff() {
+  read_keypad();
+
+  static keypad_data_t data_last;
+
+  uint16_t enc0 = (data.fields.enc0_low >> 5) + (data.fields.enc0_high<<3); // use highest 7 bits of our 12 bit input
+  uint16_t enc0_last = (data_last.fields.enc0_low >> 5) + (data_last.fields.enc0_high<<3);
+
+  if (enc0_last != enc0) {
+    enc0_last = enc0;
+    controlChange(0, 1, enc0);
+  }
+
+  send_if_differs(0, data.fields.btn0_0, data_last.fields.btn0_0);
+  send_if_differs(1, data.fields.btn0_1, data_last.fields.btn0_1);
+  send_if_differs(2, data.fields.btn0_2, data_last.fields.btn0_2);
+  send_if_differs(3, data.fields.btn1_0, data_last.fields.btn1_0);
+  send_if_differs(4, data.fields.btn1_1, data_last.fields.btn1_1);
+  send_if_differs(5, data.fields.btn1_2, data_last.fields.btn1_2);
+  send_if_differs(6, data.fields.btn1_3, data_last.fields.btn1_3);
+  send_if_differs(7, data.fields.btn1_4, data_last.fields.btn1_4);
+
+  data_last = data;
+
+}
+
+*/
+
+void loop() {
+  static uint32_t keypad_update_idx_last = 0;
+  uint32_t keypad_update_idx = millis() / 200;
+  if (keypad_update_idx > keypad_update_idx_last) {
+    keypad_update_idx_last = keypad_update_idx;
+    //midi_stuff();
+  }
+
+  //MidiUSB.flush();
+  noInterrupts();
+  update_screen();
+  interrupts();
+}

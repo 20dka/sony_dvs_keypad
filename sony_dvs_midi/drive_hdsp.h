@@ -1,11 +1,11 @@
 #pragma once
 
+#include "font5x7.h"
+
 #define ROW_COUNT 7
 #define COL_COUNT 5
 #define DIGIT_COUNT 4
-
 #define MODULE_COUNT 3
-
 #define CHAR_COUNT (DIGIT_COUNT*MODULE_COUNT)
 #define DATA_LENGTH (COL_COUNT * CHAR_COUNT)
 
