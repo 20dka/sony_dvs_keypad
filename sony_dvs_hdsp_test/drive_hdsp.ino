@@ -73,6 +73,7 @@ void update_screen() {
   uint32_t time_offset = millis();
 
   bool scroll = len > CHAR_COUNT;
+  bool scroll_col = false;
 
   for (byte c_i = 0; c_i < COL_COUNT; c_i++) { // which column of this digit
     for (byte m_i = 0; m_i < MODULE_COUNT; m_i++) { // which module
@@ -85,7 +86,7 @@ void update_screen() {
         }
 
         int col_scroll_offset = 0;
-        if (scroll)
+        if (scroll && scroll_col)
           col_scroll_offset = ( time_offset / ms_per_col) % COL_COUNT; //offset column based on timer
 
         int text_offset = d_i + (m_i*DIGIT_COUNT); //get text offset

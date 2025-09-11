@@ -48,5 +48,5 @@ bool right_align = false;
 #define MAX_TEXT_LEN 255
 char text[MAX_TEXT_LEN+1] = "xxhello \1\2\3\4";
 
-uint32_t ms_per_col = 20;
+uint32_t ms_per_col = 10;
 uint32_t ms_per_char = ms_per_col * COL_COUNT;
